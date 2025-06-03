@@ -30,14 +30,16 @@ const transporter = mailer.createTransport({
 })
 
 async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
+    const options = { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const currentDate = new Date().toLocaleString('en-US', options);
     let message = "<h1>"+emailSubject+"</h1>"
     message += "<p>Email from contact form on ryansotelo."+from+"</p>"
     message += "<br><br>"
     message += "<h2>" + emailBody + "</h2>"
     message += "<br><br>"
-    message += "<p>From: "+emailAddress+"</p>"
+    message += "<p>Reply to: "+emailAddress+"</p>"
     message += "<br><br>"
-    message += "<p>From: "+Date.now()+"</p>"
+    message += "<p>At: "+currentDate+"</p>"
     const mailOptions = {
         form: process.env.GAU,
         to: process.env.CONTACT_EMAIL,
@@ -70,7 +72,12 @@ app.post("/sendEmailFromSiteForm",(req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
-    sendEmail(emailAddress, emailSubject, emailBody, "site")
+    try {
+        sendEmail(emailAddress, emailSubject, emailBody, "site")
+        res.status(200)
+    } catch (error) {
+        res.status(500)
+    }
 })
 
 
@@ -78,7 +85,12 @@ app.post("/sendEmailFromWorkForm",(req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
-    sendEmail(emailAddress, emailSubject, emailBody, "work")
+    try {
+        sendEmail(emailAddress, emailSubject, emailBody, "work")
+        res.status(200)
+    } catch (error) {
+        res.status(500)
+    }
 })
 
 app.listen(8080 , ()=>{
