@@ -80,3 +80,7 @@ app.post("/sendEmailFromWorkForm",(req,res)=>{
     } = req.body
     sendEmail(emailAddress, emailSubject, emailBody, "work")
 })
+
+app.listen(8080 , ()=>{
+    'Server started on port 8080.'
+})
