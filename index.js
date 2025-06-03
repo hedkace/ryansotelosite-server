@@ -46,6 +46,12 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         subject: emailSubject + " | Contact Form",
         html: message
     }
+    const mailOptions2 = {
+        form: process.env.GAU,
+        to: emailAddress,
+        subject: emailSubject + " | Contact Form",
+        html: "<em>This message was sent to Ryan Sotelo.</em><br><br>"+message
+    }
 
     transporter.sendMail(mailOptions, (error, info)=>{
         if(error){
