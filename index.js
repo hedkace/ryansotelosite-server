@@ -1,6 +1,6 @@
 const express = require('express')
 const http = require('http')
-// const cors = require('cors')
+const cors = require('cors')
 require('dotenv').config()
 const mailer = require('nodemailer')
 
@@ -10,10 +10,10 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-// app.use(cors({
-//     credentials: true,
-//     origin: process.env.REACT_URL,
-// }))
+app.use(cors({
+    // credentials: true,
+    origin: "*",
+}))
 
 
 
