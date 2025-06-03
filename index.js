@@ -1,6 +1,6 @@
 const express = require('express')
 const http = require('http')
-const cors = require('cors')
+// const cors = require('cors')
 require('dotenv').config()
 const mailer = require('nodemailer')
 
@@ -40,7 +40,7 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
     message += "<p>From: "+Date.now()+"</p>"
     const mailOptions = {
         form: process.env.GAU,
-        to: emailAddress,
+        to: process.env.CONTACT_EMAIL,
         subject: emailSubject + " | Contact Form",
         html: message
     }
