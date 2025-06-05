@@ -51,26 +51,29 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         subject: "Thank you for reaching out!",
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
-    let successful = true
-    transporter.sendMail(mailOptions, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-            successful = false
-        }
-        else{
-            console.log("Email sent: ", info.response)
-        }
+    let p = new Promise((resolve, reject)=>{
+        transporter.sendMail(mailOptions, (error, info)=>{
+            if(error){
+                console.log('Error', error)
+                reject(false)
+            }
+            else{
+                console.log('Message sent to rs')
+                transporter.sendMail(mailOptions2, (error, info)=>{
+                    if(error){
+                        console.log('Error', error)
+                        successful = false
+                        reject(false)
+                    }
+                    else{
+                        console.log("Email sent: ", info.response)
+                        resolve(true)
+                    }
+                })
+            }
+        })
     })
-    transporter.sendMail(mailOptions2, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-            successful = false
-        }
-        else{
-            console.log("Email sent: ", info.response)
-        }
-    })
-    return successful
+    p.then(result => {return result})
 }
 
 
