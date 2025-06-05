@@ -5,5 +5,24 @@
     "express": "^5.1.0",
     "http": "^0.0.1-security",
     "nodemailer": "^7.0.3"
-  }
+  },
+  "name": "ryansotelosite-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hedkace/ryansotelosite-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hedkace/ryansotelosite-server/issues"
+  },
+  "homepage": "https://github.com/hedkace/ryansotelosite-server#readme"
 }

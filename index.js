@@ -51,26 +51,20 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         subject: "Thank you for reaching out!",
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
-    let successful = true
-    await transporter.sendMail(mailOptions, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-            successful = false
-        }
-        else{
-            console.log("Email sent: ", info.response)
-        }
-    })
-    await transporter.sendMail(mailOptions2, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-            successful = false
-        }
-        else{
-            console.log("Email sent: ", info.response)
-        }
-    })
-    return successful
+
+    try {
+        const mail1 = await transporter.sendMail(mailOptions)
+        const mail2 = await transporter.sendMail(mailOptions2)
+        console.log(mail1)
+        console.log(mail2)
+        const responseData = {mail1, mail2}
+        console.log(responseData)
+        if(mail1?.accepted?.length > 0) return {success: true, data: responseData}
+        else return {success: false, data: responseData}
+    } catch (error) {
+        console.log(error)
+        return {success: false, data: error}
+    }
 }
 
 
@@ -87,11 +81,13 @@ app.post("/sendEmailFromSiteForm",async (req,res)=>{
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = await sendEmail(emailAddress, emailSubject, emailBody, "site")
-        if(result) res.status(200).json({message: "Message sent successfully"})
-        else res.status(500).json({message: "error"})
+        sendEmail(emailAddress, emailSubject, emailBody, "site")
+            .then(result => {
+                if(result.success) res.status(200).json({success: true, message: "Message sent successfully", data: result.data})
+                else res.status(500).json({success: false, message: "error", data: result.data})
+            })
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json({success: false, message: "error", error})
     }
 })
 
@@ -101,14 +97,16 @@ app.post("/sendEmailFromWorkForm",async (req,res)=>{
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = await sendEmail(emailAddress, emailSubject, emailBody, "work")
-        if(result) res.status(200).json({message: "Message sent successfully"})
-        else res.status(500).json({message: "error"})
+        sendEmail(emailAddress, emailSubject, emailBody, "work")
+            .then(result => {
+                if(result.success) res.status(200).json({success: true, message: "Message sent successfully", data: result.data})
+                else res.status(500).json({success: false, message: "error", data: result.data})
+            })
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json({success: false, message: "error", error})
     }
 })
 
 app.listen(8080 , ()=>{
-    'Server started on port 8080.'
+    console.log('Server started on port 8080.')
 })
