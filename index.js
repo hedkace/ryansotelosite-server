@@ -59,19 +59,17 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
             }
             else{
                 console.log('Message sent to rs')
-                transporter.sendMail(mailOptions2, (error, info)=>{
-                    if(error){
-                        console.log('Error', error)
-                        successful = false
-                        reject(false)
-                    }
-                    else{
-                        console.log("Email sent: ", info.response)
-                        resolve(true)
-                    }
-                })
             }
         })
+        transporter.sendMail(mailOptions2, (error, info)=>{
+            if(error){
+                console.log('Error', error)
+            }
+            else{
+                console.log("Email sent: ", info.response)
+            }
+        })
+        resolve(true)
     })
     p.then(result => {return result})
 }
