@@ -51,24 +51,29 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         subject: "Thank you for reaching out!",
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
-    transporter.sendMail(mailOptions, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-        }
-        else{
-            console.log('Message sent to rs')
-            console.log("Email sent: ", info.response)
-        }
+    let p = new Promise((resolve, reject)=>{
+        transporter.sendMail(mailOptions, (error, info)=>{
+            if(error){
+                console.log('Error', error)
+                reject(false)
+            }
+            else{
+                console.log('Message sent to rs')
+                transporter.sendMail(mailOptions2, (error, info)=>{
+                    if(error){
+                        console.log('Error', error)
+                        successful = false
+                        reject(false)
+                    }
+                    else{
+                        console.log("Email sent: ", info.response)
+                        resolve(true)
+                    }
+                })
+            }
+        })
     })
-    transporter.sendMail(mailOptions2, (error, info)=>{
-        if(error){
-            console.log('Error', error)
-            successful = false
-        }
-        else{
-            console.log("Email sent: ", info.response)
-        }
-    })
+    p.then(result => {return result})
 }
 
 
@@ -86,6 +91,7 @@ app.post("/sendEmailFromSiteForm",async (req,res)=>{
     } = req.body
     try {
         let result = await sendEmail(emailAddress, emailSubject, emailBody, "site")
+        console.log(result)
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
@@ -100,6 +106,7 @@ app.post("/sendEmailFromWorkForm",async (req,res)=>{
     } = req.body
     try {
         let result = await sendEmail(emailAddress, emailSubject, emailBody, "work")
+        console.log(result)
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
