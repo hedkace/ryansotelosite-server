@@ -10,7 +10,10 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.use(cors())
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST"]
+}))
 
 
 
@@ -46,7 +49,7 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
     const mailOptions2 = {
         form: process.env.GAU,
         to: emailAddress,
-        subject: emailSubject + " | Contact Form",
+        subject: "Thank you for reaching out!",
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
     let successful = true
