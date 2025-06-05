@@ -11,7 +11,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.use(cors({
-    origin: ['https://ryansotelo.site', 'https://ryansotelo.work']
+    origin: ["https://ryansotelo.site", "https://ryansotelo.work"],
+    methods: ["GET", "POST"]
 }))
 
 
@@ -51,12 +52,13 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         subject: "Thank you for reaching out!",
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
+    let successful = true
     transporter.sendMail(mailOptions, (error, info)=>{
         if(error){
             console.log('Error', error)
+            successful = false
         }
         else{
-            console.log('Message sent to rs')
             console.log("Email sent: ", info.response)
         }
     })
@@ -69,6 +71,7 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
             console.log("Email sent: ", info.response)
         }
     })
+    return successful
 }
 
 
@@ -80,12 +83,12 @@ app.get('/', (req,res)=>{
     res.json('test ok')
 })
 
-app.post("/sendEmailFromSiteForm",async (req,res)=>{
+app.post("/sendEmailFromSiteForm",(req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = await sendEmail(emailAddress, emailSubject, emailBody, "site")
+        let result = sendEmail(emailAddress, emailSubject, emailBody, "site")
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
@@ -94,12 +97,12 @@ app.post("/sendEmailFromSiteForm",async (req,res)=>{
 })
 
 
-app.post("/sendEmailFromWorkForm",async (req,res)=>{
+app.post("/sendEmailFromWorkForm",(req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = await sendEmail(emailAddress, emailSubject, emailBody, "work")
+        let result = sendEmail(emailAddress, emailSubject, emailBody, "work")
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
