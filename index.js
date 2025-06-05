@@ -10,10 +10,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.use(cors({
-    // credentials: true,
-    origin: "*",
-}))
+app.use(cors())
 
 
 
@@ -50,29 +47,28 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         form: process.env.GAU,
         to: emailAddress,
         subject: emailSubject + " | Contact Form",
-        html: "<em>This message was sent to Ryan Sotelo.</em><br><br>"+message
+        html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
-
+    let successful = true
     transporter.sendMail(mailOptions, (error, info)=>{
         if(error){
             console.log('Error', error)
-            return {success: false, error: error}
+            successful = false
         }
         else{
             console.log("Email sent: ", info.response)
-            return {success: true, info:info.response}
         }
     })
     transporter.sendMail(mailOptions2, (error, info)=>{
         if(error){
             console.log('Error', error)
-            return {success: false, error: error}
+            successful = false
         }
         else{
             console.log("Email sent: ", info.response)
-            return {success: true, info:info.response}
         }
     })
+    return successful
 }
 
 
@@ -89,8 +85,9 @@ app.post("/sendEmailFromSiteForm",(req,res)=>{
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        sendEmail(emailAddress, emailSubject, emailBody, "site")
-        res.status(200)
+        let result = sendEmail(emailAddress, emailSubject, emailBody, "site")
+        if(result) res.status(200)
+        else res.status(500)
     } catch (error) {
         res.status(500)
     }
@@ -102,10 +99,11 @@ app.post("/sendEmailFromWorkForm",(req,res)=>{
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        sendEmail(emailAddress, emailSubject, emailBody, "work")
-        res.status(200)
+        let result = sendEmail(emailAddress, emailSubject, emailBody, "work")
+        if(result) res.status(200)
+        else res.status(500)
     } catch (error) {
-        res.status(500)
+        res.status(500).json(error)
     }
 })
 
