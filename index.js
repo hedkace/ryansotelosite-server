@@ -83,12 +83,12 @@ app.get('/', (req,res)=>{
     res.json('test ok')
 })
 
-app.post("/sendEmailFromSiteForm",(req,res)=>{
+app.post("/sendEmailFromSiteForm",async (req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = sendEmail(emailAddress, emailSubject, emailBody, "site")
+        let result = await sendEmail(emailAddress, emailSubject, emailBody, "site")
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
@@ -97,12 +97,12 @@ app.post("/sendEmailFromSiteForm",(req,res)=>{
 })
 
 
-app.post("/sendEmailFromWorkForm",(req,res)=>{
+app.post("/sendEmailFromWorkForm",async (req,res)=>{
     const {
         emailAddress, emailSubject, emailBody
     } = req.body
     try {
-        let result = sendEmail(emailAddress, emailSubject, emailBody, "work")
+        let result = await sendEmail(emailAddress, emailSubject, emailBody, "work")
         if(result) res.status(200).json({message: "Message sent successfully"})
         else res.status(500).json({message: "error"})
     } catch (error) {
