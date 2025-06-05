@@ -53,7 +53,7 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
         html: "<em>Thank you for reaching out! This message was sent to Ryan Sotelo.</em><br><br>"+message
     }
     let successful = true
-    await transporter.sendMail(mailOptions, (error, info)=>{
+    transporter.sendMail(mailOptions, (error, info)=>{
         if(error){
             console.log('Error', error)
             successful = false
@@ -62,7 +62,7 @@ async function sendEmail(emailAddress, emailSubject, emailBody, from="site"){
             console.log("Email sent: ", info.response)
         }
     })
-    await transporter.sendMail(mailOptions2, (error, info)=>{
+    transporter.sendMail(mailOptions2, (error, info)=>{
         if(error){
             console.log('Error', error)
             successful = false
