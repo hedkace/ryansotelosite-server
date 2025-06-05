@@ -89,10 +89,10 @@ app.post("/sendEmailFromSiteForm",(req,res)=>{
     } = req.body
     try {
         let result = sendEmail(emailAddress, emailSubject, emailBody, "site")
-        if(result) res.status(200)
-        else res.status(500)
+        if(result) res.status(200).json({message: "Message sent successfully"})
+        else res.status(500).json({message: "error"})
     } catch (error) {
-        res.status(500)
+        res.status(500).json(error)
     }
 })
 
@@ -103,8 +103,8 @@ app.post("/sendEmailFromWorkForm",(req,res)=>{
     } = req.body
     try {
         let result = sendEmail(emailAddress, emailSubject, emailBody, "work")
-        if(result) res.status(200)
-        else res.status(500)
+        if(result) res.status(200).json({message: "Message sent successfully"})
+        else res.status(500).json({message: "error"})
     } catch (error) {
         res.status(500).json(error)
     }
